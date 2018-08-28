@@ -1,0 +1,39 @@
+plugins {
+    id "com.moowork.node" version "1.2.0"
+    id 'java'
+}
+//调用npm run build命令的Gradle任务
+task npmBuild(type: NpmTask, dependsOn: npmInstall) {
+    group = 'node'
+    args = ['run', 'build']
+}
+
+// 设置Gradle的java插件的 compileJava 任务依赖npmBuild, 即web子模块编译前必须运行npm run build
+compileJava.dependsOn npmBuild
+
+//调用npm run dev
+task npmDev(type: NpmTask, dependsOn: npmInstall) {
+    group = 'node'
+    args = ['run', 'dev']
+}
+
+clean {
+    delete 'dist'
+}
+
+sourceSets {
+    main {
+        resources {
+            srcDir 'dist'
+        }
+    }
+}
+
+
+//将src文件夹中的资源文件同时打包
+//jar {
+//    from('dist') {
+//        include '**'
+//    }
+//    into('static')
+//}
