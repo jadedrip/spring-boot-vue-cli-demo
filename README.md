@@ -51,7 +51,28 @@ web 子工程的 build.gradle 文件如下：
         }
     }
 
+另外，为了方便开发，在 Vue.config.js 中加入了代理配置：
 
+      devServer: {
+        open: process.platform === 'darwin',
+        host: '0.0.0.0',
+        port: 8080,
+        https: false,
+        hotOnly: false,
+        proxy: 'http://localhost:8081'
+      }
+
+并把 spring-boot 的监听端口改为了 8081。这样，在 web 目录下，通过命令
+
+    npm run serve
+    
+启动 node.js 内置的 web 服务器以后，就可以把 api 取数据相关的请求代理到 spring-boot 的后端服务。  
+通过 http://localhost:8080/ 来访问页面，可以保证 vue 相关的前端改动立刻生效。  
+用代理是因为 chrome 之类的新浏览器，会拦截跨域访问。
+
+PS: 用 node 服务调试的时候，可以注释掉 compile project(":web") 以加快编译速度。
+
+## 参考
 感谢 [煲煲菜](https://segmentfault.com/u/caibaohong) 的文章：[使用Gradle整合SpringBoot+Vue.js-开发调试与打包](https://segmentfault.com/a/1190000008968295)
 
 这个工程主要参考了它
